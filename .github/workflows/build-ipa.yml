@@ -1,0 +1,52 @@
+name: Build iOS IPA
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build archive (no signing)
+        run: |
+          xcodebuild archive \
+            -project CompassApp/CompassApp.xcodeproj \
+            -scheme CompassApp \
+            -destination "generic/platform=iOS" \
+            -archivePath /tmp/CompassApp.xcarchive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package .app into unsigned IPA
+        run: |
+          APP_PATH=$(find /tmp/CompassApp.xcarchive -name "*.app" | head -1)
+          mkdir -p /tmp/ipa-payload/Payload
+          cp -R "$APP_PATH" /tmp/ipa-payload/Payload/
+          cd /tmp/ipa-payload
+          zip -r /tmp/CompassApp.ipa Payload
+          echo "IPA size: $(du -sh /tmp/CompassApp.ipa | cut -f1)"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CompassApp-unsigned
+          path: /tmp/CompassApp.ipa
+          retention-days: 30

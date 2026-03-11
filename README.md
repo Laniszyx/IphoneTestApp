@@ -31,6 +31,32 @@ CompassApp/
     └── Info.plist             # Location permissions
 ```
 
+## Build via GitHub Actions (no Mac needed)
+
+Every push to `main` automatically builds an unsigned `.ipa` that you can sideload onto your iPhone without a Mac.
+
+### Download the IPA
+
+1. Go to the **Actions** tab of this repository on GitHub.
+2. Click the latest **"Build iOS IPA"** workflow run (green ✔).
+3. Scroll down to **Artifacts** and download **`CompassApp-unsigned`**.
+4. Unzip the downloaded archive — you will find `CompassApp.ipa` inside.
+
+### Install the IPA on your iPhone
+
+You can install an unsigned IPA using one of the free sideloading tools below.  
+No paid Apple Developer account is required.
+
+| Tool | Platform | Instructions |
+|---|---|---|
+| [AltStore](https://altstore.io/) | Windows & Mac | Install AltStore on your PC/Mac, connect iPhone via USB, drag the `.ipa` onto AltStore |
+| [Sideloadly](https://sideloadly.io/) | Windows & Mac | Connect iPhone via USB, drag the `.ipa` into Sideloadly, sign in with your Apple ID |
+
+> **Note:** Free Apple ID sideloads expire after **7 days** and must be re-signed.  
+> Developer Mode must be enabled on your iPhone (*Settings → Privacy & Security → Developer Mode*).
+
+---
+
 ## How to build and install on your iPhone
 
 ### Prerequisites
